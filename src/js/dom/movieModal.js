@@ -7,11 +7,13 @@ import {
   renderWatched,
 } from '../dom/watchedLS';
 import { addListenerAddBtnTrailer } from './trailer';
-import myImageUrl from '../../images/sorry.png';
+
+const body = document.querySelector('body');
 
 function activeMovieModal() {
   setTimeout(() => {
     const movieItems = document.querySelectorAll('.movie__item');
+    const scroll = document.querySelector('.up-btn__wrapper');
 
     // console.log(movieItems);
 
@@ -22,22 +24,25 @@ function activeMovieModal() {
         const id = movie.getAttribute('data-id');
 
         getMovieDetails(id).then(data => {
+          console.log(data);
+
           const backdrop = document.querySelector('.backdrop');
           backdrop.classList.remove('is-hidden');
+          backdrop.style.background = `url('https://image.tmdb.org/t/p/original${data.backdrop_path}') no-repeat center,linear-gradient(to right, hsla(0, 0%, 0%, 0.2), #00000033) `;
+          backdrop.style.backgroundSize = 'cover';
+          scroll.classList.add('is-hidden');
+          body.classList.add('no-scroll');
           //Заповнення id для кнопки Add to watched і Add to queue
           document
             .querySelector('.modal-movie__content')
             .setAttribute('data-id', id);
-          let poster = '';
-          if (!data.poster_path) {
-            poster = myImageUrl;
-          } else {
-            poster = `https://image.tmdb.org/t/p/w500/${data.poster_path}`;
-          }
+
           document.querySelector('.modal-movie__content').innerHTML = `
         <div class="movie-detail">
           <div class="movie-detail__image">
-            <img src="${poster}" alt="" class="movie-detail__img" >
+            <img src="https://image.tmdb.org/t/p/w500/${
+              data.poster_path
+            }" alt="" class="movie-detail__img">
           </div>
           <div class="movie-detail__content">
             <h2 class="movie-detail__title">${data.title}</h2>
@@ -98,10 +103,12 @@ function activeMovieModal() {
         window.addEventListener('keydown', e => {
           document.querySelector('.backdrop').classList.add('is-hidden');
         });
+        scroll.classList.remove('is-hidden');
 
         //Потрібно перерендерить сторінку якщо фільм був видалений
         renderWatched();
         renderQueue();
+        body.classList.remove('no-scroll');
       }
     });
   }, 1000);
