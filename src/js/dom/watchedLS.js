@@ -2,6 +2,7 @@ import { getMovieDetails } from '../api/fetchAPI';
 import { renderLibraryGallery } from '../dom/renderMovies';
 import { refs } from './refs';
 import { checkForLoginState } from './checkForLoginState-lib';
+import sprite from '../../images/sprite.svg';
 
 const keyWatchedLS = 'arrayWatched';
 //Перевіряємо є чи є в нас сховище з таким ключем і якщо немає створюємо
@@ -107,6 +108,26 @@ function renderWatched() {
       renderLibraryGallery(arrayWatched);
     }
   } else {
+    const main = document.querySelector('main');
+    const svgImage = `<svg width='750' height='500'><use href='${sprite}#nothing-here-space'></use></svg>`;
+    main.insertAdjacentHTML('beforeend', svgImage);
+    const image = main.querySelector('svg');
+    const list = document.querySelector('ul.movie__gallery');
+    main.style.margin = '0';
+    list.style.margin = '0';
+    list.style.padding = '0';
+    main.style.padding = '0';
+    // main.style.backgroundOrigin = 'content-box';
+    const message =
+      "<p class='movie-detail__title'>Oops, there are no movies in here!</p>";
+    main.insertAdjacentHTML('beforeend', message);
+    const messageElem = main.querySelector('p');
+    main.style.display = 'flex';
+    main.style.justifyContent = 'center';
+    main.style.flexDirection = 'column';
+    main.style.alignItems = 'center';
+    messageElem.style.marginTop = '20px';
+    // body.style.backgroundPosition = center;
     return;
   }
 }
